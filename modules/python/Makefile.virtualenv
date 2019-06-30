@@ -1,0 +1,11 @@
+
+VENV_NAME ?= .venv
+VENV_ACTIVATION_PATH = $(VENV_NAME)/bin/activate
+
+$(VENV_ACTIVATION_PATH):
+	@echo -e "\e[32m==> Create virtual activation $@ \e[0m"
+	@virtualenv $(VENV_NAME)
+
+## Create the python virtual env
+python/create-venv: $(VENV_ACTIVATION_PATH) ## Create the python virtual env
+	@echo -e "\e[32m==> Create virtual env $(VENV_NAME) \e[0m"

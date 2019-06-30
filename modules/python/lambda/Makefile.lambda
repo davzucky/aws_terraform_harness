@@ -1,0 +1,6 @@
+LAMBDA_ROOT_PATH ?= lambda
+LAMBDA_PYTHON_ROOT_PATH = $(LAMBDA_ROOT_PATH)/python
+
+LAMBDA_FUNCTIONS = $(subst /,,$(shell ls -d $(LAMBDA_PYTHON_ROOT_PATH)))
+
+
