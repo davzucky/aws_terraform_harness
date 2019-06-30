@@ -3,7 +3,7 @@ TERRAFORM_CONFIG_FOLDER ?= .
 
 ## Format the terraform recipe
 terraform/format-code: $(TERRAFORM_BINARY)
-	@echo -e "\e[32m==> Lint terraform \e[0m"
+	@echo -e "\e[32m==> Format terraform code from folder $(TERRAFORM_CONFIG_FOLDER) \e[0m"
 	@cd $(TERRAFORM_CONFIG_FOLDER) && \
 	 $(TERRAFORM_BINARY) init --backend=false && \
 	 $(TERRAFORM_BINARY) fmt
