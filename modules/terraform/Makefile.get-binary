@@ -1,0 +1,32 @@
+#.PHONY: help terraform/lint
+
+.DEFAULT_GOAL := help
+# Force shell to be bash
+SHELL := /bin/bash
+
+
+BINARY_PATH = ./bin
+TERRAFORM_VERSION = 0.12.3
+TERRAFORM_BINARY_VERSION_FILE = $(BINARY_PATH)/terraform_$(TERRAFORM_VERSION)
+TERRAFORM_BINARY = $(abspath $(BINARY_PATH)/terraform)
+TERRAFORM_URL = https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
+TERRAFORM_TEMP_ZIP = $(BINARY_PATH)/terraform.zip
+
+
+$(BINARY_PATH)/.touch:
+	@echo -e "\e[32m==> Create ouput package folder $$@ $$(@D)\e[0m"
+	@mkdir $(BINARY_PATH)
+	@touch $@
+
+$(TERRAFORM_BINARY_VERSION_FILE): $(BINARY_PATH)/.touch
+	@echo -e "\e[32m==> Create Terraform version file $@ $(@D)\e[0m"
+	@touch $@
+
+$(TERRAFORM_TEMP_ZIP): $(TERRAFORM_BINARY_VERSION_FILE)
+	@echo -e "\e[32m==> Download terraform binary\e[0m"
+	@curl $(TERRAFORM_URL) -o $(TERRAFORM_TEMP_ZIP)
+
+$(TERRAFORM_BINARY): $(TERRAFORM_TEMP_ZIP)
+	@echo -e "\e[32m==> Extract terraform binary\e[0m"
+	@unzip -o $(TERRAFORM_TEMP_ZIP) -d $(BINARY_PATH)
+	@touch $(TERRAFORM_BINARY)
