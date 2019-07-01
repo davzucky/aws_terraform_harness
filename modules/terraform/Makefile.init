@@ -1,0 +1,8 @@
+
+TERRAFORM_CONFIG_FOLDER ?= .
+
+## init terraform recipe
+terraform/init: $(TERRAFORM_BINARY)
+	@echo -e "\e[32m==> Init terraform \e[0m"
+	@cd $(TERRAFORM_CONFIG_FOLDER) && \
+	 $(TERRAFORM_BINARY) init -input=false
