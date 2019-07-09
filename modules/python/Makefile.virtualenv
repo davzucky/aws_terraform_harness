@@ -1,4 +1,7 @@
-VENV_ACTIVATION_PATH = $(VENV_NAME)/bin/activate
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfile_dir := $(dir $(mkfile_path))
+
+include $(mkfile_dir)/Makefile.variables
 
 $(VENV_ACTIVATION_PATH):
 	@echo -e "\e[32m==> Create virtual activation $@ \e[0m"
@@ -7,3 +10,5 @@ $(VENV_ACTIVATION_PATH):
 ## Create the python virtual env
 python/create-venv: $(VENV_ACTIVATION_PATH) ## Create the python virtual env
 	@echo -e "\e[32m==> Create virtual env $(VENV_NAME) \e[0m"
+
+.PHONY: python/create-venv
