@@ -1,7 +1,14 @@
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfile_dir := $(dir $(mkfile_path))
 
+include $(mkfile_dir)/Makefile.lambda
 
-#$(LAMBDA_FUNCTIONS)
+$(VIRTUAL_ENV_LAMBDAS_ACTIVATE):
+	@echo -e "\e[32m==> Create virtual env for lambda function $(subst /bin/activate,,$@). \e[0m"
+	@virtualenv $(subst /bin/activate,,$@)
 
-## Create the python virtual env
-python/lambda/create-venv: $(VENV_ACTIVATION_PATH) ## Create the python virtual env
-	@echo -e "\e[32m==> Create virtual env $(VENV_NAME) \e[0m"
+## Create all the venv for lambda
+python/lambda/create-venv-all: $(VIRTUAL_ENV_LAMBDAS_ACTIVATE) ## Create the python virtual env
+	@echo -e "\e[32m==> Create all virtual env for lambda functions $(LAMBDA_FUNCTIONS)\e[0m"
+
+.PHONY: python/lambda/create-venv-all
