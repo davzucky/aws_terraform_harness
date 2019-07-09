@@ -1,0 +1,12 @@
+
+REQUIREMENTS_FILE_FREEZE = $(REQUIREMENTS_FILE).freeze
+
+$(REQUIREMENTS_FILE_FREEZE): $(REQUIREMENTS_FILE) $(VENV_ACTIVATION_PATH)
+	@echo -e "\e[32m==> Install requirement $< to the virtualenv $(VENV_NAME) \e[0m"
+	@source $(VENV_ACTIVATION_PATH) && \
+	 pip install -r $< && \
+	 pip freeze  > $@
+
+## Install pip requirements to the virtualenv
+python/pip-install: $(REQUIREMENTS_FILE_FREEZE) ## Create the python virtual env
+	@echo -e "\e[32m==> Install requirements file $(REQUIREMENT_FILE) to $(VENV_NAME) \e[0m"

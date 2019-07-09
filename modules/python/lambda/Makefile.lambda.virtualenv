@@ -2,3 +2,6 @@
 
 #$(LAMBDA_FUNCTIONS)
 
+## Create the python virtual env
+python/lambda/create-venv: $(VENV_ACTIVATION_PATH) ## Create the python virtual env
+	@echo -e "\e[32m==> Create virtual env $(VENV_NAME) \e[0m"

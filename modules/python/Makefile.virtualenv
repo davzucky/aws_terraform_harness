@@ -1,5 +1,3 @@
-
-VENV_NAME ?= .venv
 VENV_ACTIVATION_PATH = $(VENV_NAME)/bin/activate
 
 $(VENV_ACTIVATION_PATH):
