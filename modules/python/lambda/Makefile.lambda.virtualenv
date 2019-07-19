@@ -3,6 +3,35 @@ mkfile_dir := $(dir $(mkfile_path))
 
 include $(mkfile_dir)/Makefile.lambda
 
+REQUIREMENTS_TESTS_ALL := $(mkfile_dir)../requirements.tests.txt
+
+REQUIREMENTS = requirements.txt
+REQUIREMENTS_FREEZE = $(REQUIREMENTS).freeze
+REQUIREMENTS_TESTS = requirements.tests.txt
+REQUIREMENTS_TESTS_FREEZE = $(REQUIREMENTS_TESTS).freeze
+LAMBDA_REQUIREMENTS_FREEZE = $(foreach FUNCTION_ROOT_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH), $(FUNCTION_ROOT_PATH)/$(REQUIREMENTS_FREEZE))
+LAMBDA_REQUIREMENTS_TESTS_FREEZE = $(foreach FUNCTION_ROOT_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH), $(FUNCTION_ROOT_PATH)/$(REQUIREMENTS_TESTS_FREEZE))
+
+LAMBDA_VIRTUAL_ENV_TESTS_FREEZE =  $(foreach VIRTUAL_ENV,$(VIRTUAL_ENV_LAMBDAS), $(VIRTUAL_ENV)/$(REQUIREMENTS_TESTS_FREEZE))
+
+$(LAMBDA_REQUIREMENTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS) $(VIRTUAL_ENV_ROOT_PATH)/%/bin/activate $(VIRTUAL_ENV_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE)
+	@echo -e "\e[32m==> Pip requirement $< \e[0m"
+	@source $(word 2,$^) && \
+	  pip install -r $< && \
+	  pip freeze > $@
+
+$(LAMBDA_REQUIREMENTS_TESTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS) $(VIRTUAL_ENV_ROOT_PATH)/%/bin/activate $(VIRTUAL_ENV_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE)
+	@echo -e "\e[32m==> Pip requirement $< \e[0m"
+	@source $(word 2,$^) && \
+	  pip install -r $< && \
+	  pip freeze > $@
+
+
+$(LAMBDA_VIRTUAL_ENV_TESTS_FREEZE): %/$(REQUIREMENTS_TESTS_FREEZE): %/bin/activate $(REQUIREMENTS_TESTS_ALL)
+	@echo -e "\e[32m==> Install generic tests requirements. \e[0m"
+	@source $< && \
+	 pip install -r $(REQUIREMENTS_TESTS_ALL) && \
+	 touch $@
 
 
 $(VIRTUAL_ENV_LAMBDAS_ACTIVATE):
@@ -10,7 +39,6 @@ $(VIRTUAL_ENV_LAMBDAS_ACTIVATE):
 	@virtualenv $(subst /bin/activate,,$@)
 
 ## Create all the venv for lambda
-python/lambda/create-venv-all: $(VIRTUAL_ENV_LAMBDAS_ACTIVATE) ## Create the python virtual env
+python/lambda/create-venv-all: $(LAMBDA_REQUIREMENTS_FREEZE) $(LAMBDA_REQUIREMENTS_TESTS_FREEZE) ## Create the python virtual env
 	@echo -e "\e[32m==> Create all virtual env for lambda functions $(LAMBDA_FUNCTIONS)\e[0m"
 
-.PHONY: python/lambda/create-venv-all
