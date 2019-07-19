@@ -4,7 +4,7 @@ mkfile_dir = $(dir $(mkfile_path))
 
 BLACK_FOLDER ?= ./src
 
-BACK_VIRTUAL_ENV_NAME = .venv_back
+BACK_VIRTUAL_ENV_NAME = venv_back
 BACK_VIRTUAL_ENV_NAME_ACTIVATE = $(BACK_VIRTUAL_ENV_NAME)$(ACTIVATE_PATH)
 
 BLACK_REQUIREMENTS := $(mkfile_dir)requirements.black.txt
@@ -14,13 +14,13 @@ $(BACK_VIRTUAL_ENV_NAME_ACTIVATE):
 	@echo -e "\e[32m==> Create black virtual env\e[0m"
 	@virtualenv $(BACK_VIRTUAL_ENV_NAME)
 
-$(BLACK_REQUIREMENTS_FREEZE): $(BLACK_REQUIREMENTS)
+$(BLACK_REQUIREMENTS_FREEZE): $(BLACK_REQUIREMENTS) $(BACK_VIRTUAL_ENV_NAME_ACTIVATE)
 	@echo -e "\e[32m==> Install black requirements $<\e[0m"
 	@source $(BACK_VIRTUAL_ENV_NAME_ACTIVATE) && \
 	 pip install -r $< && \
 	 pip freeze > $(BLACK_REQUIREMENTS_FREEZE)
 
-python/format-code: $(BACK_VIRTUAL_ENV_NAME_ACTIVATE) $(BLACK_REQUIREMENTS_FREEZE)
+python/format-code: $(BLACK_REQUIREMENTS_FREEZE)
 	@echo -e "\e[32m==> Format python code using black\e[0m"
 	@source $(BACK_VIRTUAL_ENV_NAME_ACTIVATE) && \
 	 black .

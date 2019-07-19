@@ -1,0 +1,39 @@
+mkfile_path = $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfile_dir = $(dir $(mkfile_path))
+
+include $(mkfile_dir)/Makefile.lambda
+
+BLACK_LAMBDA_VIRTUAL_ENV_NAME = $(VIRTUAL_ENV_ROOT_PATH)/venv_back
+BLACK_LAMBDA_VIRTUAL_ENV_NAME_ACTIVATE = $(BLACK_LAMBDA_VIRTUAL_ENV_NAME)$(ACTIVATE_PATH)
+
+BLACK_LAMBDA_REQUIREMENTS := $(shell realpath $(mkfile_dir)/../requirements.black.txt)
+BLACK_LAMBDA_REQUIREMENTS_FREEZE := $(mkfile_dir)/requirements.black.txt.freeze
+
+BLACK_FORMATTED_PATH = $(foreach FUNCTION_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH), $(FUNCTION_PATH)/.formatted)
+
+$(BLACK_LAMBDA_VIRTUAL_ENV_NAME_ACTIVATE):
+	@echo -e "\e[32m==> Create black virtual env $@ \e[0m"
+	@virtualenv $(BLACK_LAMBDA_VIRTUAL_ENV_NAME)
+
+$(BLACK_LAMBDA_REQUIREMENTS_FREEZE): $(BLACK_LAMBDA_VIRTUAL_ENV_NAME_ACTIVATE) $(BLACK_LAMBDA_REQUIREMENTS)
+	@echo -e "\e[32m==> Install black requirements $<\e[0m"
+	@source $(BLACK_LAMBDA_VIRTUAL_ENV_NAME_ACTIVATE) && \
+	 pip install -r $(BLACK_LAMBDA_REQUIREMENTS) && \
+	 pip freeze > $@
+
+## Format source code for lambda
+python/lambda/format-code: $(BLACK_FORMATTED_PATH)
+	@echo -e "\e[32m==> Format python code using black\e[0m"
+
+	@echo $(BLACK_LAMBDA_REQUIREMENTS_FREEZE)
+
+
+.SECONDEXPANSION:
+RELEVANT = $(filter $(1)/%.py,$(PYTHON_FILES))
+
+$(BLACK_FORMATTED_PATH): %/.formatted: $$(call RELEVANT,%) $(BLACK_LAMBDA_REQUIREMENTS_FREEZE)
+	@echo -e "\e[32m==> Black format code in $(@D) \e[0m"
+	@source $(BLACK_LAMBDA_VIRTUAL_ENV_NAME_ACTIVATE) && \
+	 black $(@D)
+	@touch $@
+
