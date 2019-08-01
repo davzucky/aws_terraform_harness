@@ -1,0 +1,18 @@
+mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfile_dir := $(dir $(mkfile_path))
+
+include $(mkfile_dir)/Makefile.lambda
+
+.SECONDEXPANSION:
+RELEVANT = $(filter $(1)/%.py,$(PYTHON_FILES))
+
+$(RESULTS_FUNCTIONS_PATH_XML): $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE_PYTEST) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE_PYTEST) $$(call RELEVANT,%)
+	@echo -e "\e[32m==> Create result file $@ for the lambda function $(dir $<) \e[0m"
+	@export root_path=$$(pwd) && \
+	 cd $(patsubst $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML),$(LAMBDA_PYTHON_ROOT_PATH)/%/,$@) && \
+	 source $(realpath $(patsubst $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML),$(VIRTUAL_ENV_ROOT_PATH)/%_PYTEST,$@)/bin/activate)  && \
+	 pytest --flake8 --mypy --mypy-ignore-missing-imports --junit-xml=$${root_path}/$@
+
+python/lambda/test-all: $(RESULTS_FUNCTIONS_PATH_XML) ## Test all the lambda functions
+	@echo -e "\e[32m==> Test the lambda functions\e[0m"
+	@echo $(RESULT_FUNCTION_PATH_XML)

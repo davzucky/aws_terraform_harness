@@ -7,11 +7,11 @@ export DOCKER_BUILD_FLAGS ?=
 # Debug should not be defaulted to a value because some cli consider any value as `true` (e.g. helm)
 export DEBUG ?=
 
-ifeq ($(CURDIR),$(realpath $(BUILD_HARNESS_PATH)))
-## List of targets the `readme` target should call before generating the readme
-export README_DEPS ?= docs/targets.md
-export DEFAULT_HELP_TARGET = help/all
-endif
+#ifeq ($(CURDIR),$(realpath $(BUILD_HARNESS_PATH)))
+### List of targets the `readme` target should call before generating the readme
+#export README_DEPS ?= docs/targets.md
+#export DEFAULT_HELP_TARGET = help/all
+#endif
 
 # Import Makefiles into current context
 include $(BUILD_HARNESS_PATH)/modules/*/Makefile*

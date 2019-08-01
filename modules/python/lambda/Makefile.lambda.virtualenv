@@ -5,40 +5,28 @@ include $(mkfile_dir)/Makefile.lambda
 
 REQUIREMENTS_TESTS_ALL := $(mkfile_dir)../requirements.tests.txt
 
-REQUIREMENTS = requirements.txt
-REQUIREMENTS_FREEZE = $(REQUIREMENTS).freeze
-REQUIREMENTS_TESTS = requirements.tests.txt
-REQUIREMENTS_TESTS_FREEZE = $(REQUIREMENTS_TESTS).freeze
-LAMBDA_REQUIREMENTS_FREEZE = $(foreach FUNCTION_ROOT_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH), $(FUNCTION_ROOT_PATH)/$(REQUIREMENTS_FREEZE))
-LAMBDA_REQUIREMENTS_TESTS_FREEZE = $(foreach FUNCTION_ROOT_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH), $(FUNCTION_ROOT_PATH)/$(REQUIREMENTS_TESTS_FREEZE))
+$(VIRTUAL_ENV_MASTER_ACTIVATE) $(VIRTUAL_ENV_LAMBDAS_PYTEST_ACTIVATE) $(VIRTUAL_ENV_BLACK_ACTIVATE):
+	@echo -e "\e[32m==> Create virtual env $@\e[0m"
+	@virtualenv $(subst /bin/activate,, $@)
+	@echo -e "\e[32m====> Update pip in $@\e[0m"
+	@source $@ && pip install --upgrade pip
+	@echo -e "\e[32m====> touch $@\e[0m"
+	@touch $@ # touch activate file to be sure make record it
 
-LAMBDA_VIRTUAL_ENV_TESTS_FREEZE =  $(foreach VIRTUAL_ENV,$(VIRTUAL_ENV_LAMBDAS), $(VIRTUAL_ENV)/$(REQUIREMENTS_TESTS_FREEZE))
+## Section to add more dependendency for the given targets
+$(LAMBDA_REQUIREMENTS_FREEZE_PYTEST): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE_PYTEST): $(VIRTUAL_ENV_ROOT_PATH)/%_PYTEST/$(ACTIVATE_PATH) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS)
+$(LAMBDA_REQUIREMENTS_TESTS_FREEZE_PYTEST): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE_PYTEST): $(VIRTUAL_ENV_ROOT_PATH)/%_PYTEST/$(ACTIVATE_PATH) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS) $(REQUIREMENTS_TESTS_ALL)
+$(LAMBDA_REQUIREMENTS_TESTS_FREEZE_MASTER): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE_MASTER): $(VIRTUAL_ENV_MASTER_ACTIVATE) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS) $(REQUIREMENTS_TESTS_ALL)
+$(LAMBDA_REQUIREMENTS_FREEZE_MASTER): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE_MASTER): $(VIRTUAL_ENV_MASTER_ACTIVATE) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS)
+$(REQUIREMENTS_BLACK_FREEZE): $(VIRTUAL_ENV_BLACK_ACTIVATE) $(REQUIREMENTS_BLACK)
 
-$(LAMBDA_REQUIREMENTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS) $(VIRTUAL_ENV_ROOT_PATH)/%/bin/activate $(VIRTUAL_ENV_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE)
-	@echo -e "\e[32m==> Pip requirement $< \e[0m"
-	@source $(word 2,$^) && \
-	  pip install -r $< && \
-	  pip freeze > $@
-
-$(LAMBDA_REQUIREMENTS_TESTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS) $(VIRTUAL_ENV_ROOT_PATH)/%/bin/activate $(VIRTUAL_ENV_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE)
-	@echo -e "\e[32m==> Pip requirement $< \e[0m"
-	@source $(word 2,$^) && \
-	  pip install -r $< && \
-	  pip freeze > $@
-
-
-$(LAMBDA_VIRTUAL_ENV_TESTS_FREEZE): %/$(REQUIREMENTS_TESTS_FREEZE): %/bin/activate $(REQUIREMENTS_TESTS_ALL)
-	@echo -e "\e[32m==> Install generic tests requirements. \e[0m"
+$(LAMBDA_REQUIREMENTS_FREEZE_MASTER) $(LAMBDA_REQUIREMENTS_TESTS_FREEZE_MASTER) $(LAMBDA_REQUIREMENTS_TESTS_FREEZE_PYTEST) $(LAMBDA_REQUIREMENTS_FREEZE_PYTEST) $(REQUIREMENTS_BLACK_FREEZE):
+	@echo -e "\e[32m==> Install requirements $(filter-out $<,$^) $@\e[0m"
 	@source $< && \
-	 pip install -r $(REQUIREMENTS_TESTS_ALL) && \
-	 touch $@
+	 pip install  $(foreach req, $(filter-out $<,$^), -r $(req)) && \
+	 pip freeze > $@
 
-
-$(VIRTUAL_ENV_LAMBDAS_ACTIVATE):
-	@echo -e "\e[32m==> Create virtual env for lambda function $(subst /bin/activate,,$@). \e[0m"
-	@virtualenv $(subst /bin/activate,,$@)
-
-## Create all the venv for lambda
-python/lambda/create-venv-all: $(LAMBDA_REQUIREMENTS_FREEZE) $(LAMBDA_REQUIREMENTS_TESTS_FREEZE) ## Create the python virtual env
-	@echo -e "\e[32m==> Create all virtual env for lambda functions $(LAMBDA_FUNCTIONS)\e[0m"
-
+# Create the master virtual env that contain all lambdas dependencies. It's main usage is for developments
+python/lambda/create-master-venv: $(LAMBDA_REQUIREMENTS_TESTS_FREEZE_MASTER)  $(LAMBDA_REQUIREMENTS_FREEZE_MASTER) ## Create the python virtual env
+	@echo -e "\e[32m==> Create Master virtual env for all lambda functions. \e[0m"
+	@echo $(LAMBDA_REQUIREMENTS_FREEZE_PYTEST)
