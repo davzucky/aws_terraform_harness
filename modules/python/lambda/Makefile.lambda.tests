@@ -3,7 +3,7 @@ mkfile_dir := $(dir $(mkfile_path))
 
 include $(mkfile_dir)/Makefile.lambda
 
-
+.SECONDEXPANSION:	
 $(RESULTS_FUNCTIONS_PATH_XML): $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE_PYTEST) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE_PYTEST) $$(call RELEVANT,%)
 	@echo -e "\e[32m==> Create result file $@ for the lambda function $(dir $<) \e[0m"
 	@export root_path=$$(pwd) && \
