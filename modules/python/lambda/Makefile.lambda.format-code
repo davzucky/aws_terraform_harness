@@ -7,8 +7,7 @@ BLACK_FORMATTED_PATH = $(foreach FUNCTION_PATH,$(LAMBDA_FUNCTIONS_FULL_ROOT_PATH
 
 python/lambda/format-code: $(BLACK_FORMATTED_PATH) ## Format source code for lambda
 	@echo -e "\e[32m==> Format python code using black\e[0m"
-
-	@echo $(BLACK_LAMBDA_REQUIREMENTS_FREEZE)
+	@echo $(REQUIREMENTS_BLACK)
 
 .SECONDEXPANSION:
 RELEVANT = $(filter $(1)/%.py,$(PYTHON_FILES))

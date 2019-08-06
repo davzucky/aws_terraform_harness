@@ -1,0 +1,13 @@
+# Extract the share variable from the config file
+
+CONFIG_VERSION = $(shell grep -r version config.toml | awk -F '"' '{print $$2}')
+PROJECT_NAME = $(shell grep -r name config.toml | awk -F '"' '{print $$2}')
+S3_BUCKET_URL = $(shell grep -r S3_bucket_uri config.toml | awk -F '"' '{print $$2}')
+S3_PACKAGE_PATH = $(shell grep -r S3_folder_path config.toml | awk -F '"' '{print $$2}')
+
+GIT_HASH_COMMIT = $(shell git rev-parse --short HEAD)
+VERSION = $(CONFIG_VERSION).$(GIT_HASH_COMMIT)
+
+# Terraform
+TERRAFORM_MODULES_ROOT_PATH = terraform/$(PROJECT_NAME)
+TERRAFORM_PACKAGES_PATH = $(TERRAFORM_MODULES_ROOT_PATH)/packages
