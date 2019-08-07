@@ -5,7 +5,9 @@ include $(BUILD_HARNESS_PATH)/modules/python/lambda/Makefile.lambda
 $(LAMBDA_PACKAGES_ZIPS_PATH): $(TERRAFORM_PACKAGES_PATH)/%.$(VERSION).zip: $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE) $$(call RELEVANT,$(LAMBDA_PYTHON_ROOT_PATH)/%)
 	@echo -e "\e[32m==> Create lambda package $@ \e[0m"
 	@echo -e "\e[32m====> add site-package \e[0m"
-	@export root_path=$$(pwd) && \
+
+	@mkdir -p $(@D) && \
+	 export root_path=$$(pwd) && \
 	 cd $$(source $(patsubst $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE),$(VIRTUAL_ENV_ROOT_PATH)/%/$(ACTIVATE_PATH), $<) && python -m site | grep "$$(pwd).*site-packages" | sed "s/^.*'\(.*\)'.*$$/\1/") && \
 	 zip -r9 $${root_path}/$@ .
 	@echo -e "\e[32m====> add lambda module files \e[0m"
