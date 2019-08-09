@@ -43,4 +43,4 @@ help/short: ## This help short screen
 	@$(SELF) -s help/generate MAKEFILE_LIST="Makefile $(BUILD_HARNESS_PATH)/Makefile.helpers"
 
 help/generate: ## Generate help output from MAKEFILE_LIST
-	@grep -E '^([a-zA-Z_-]|[/])+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = "[:|##]"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$NF}'
+	@grep -E '^([a-zA-Z_-]|[/])+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = "[:|##]"}; {printf "\033[36m%-30s\033[0m %s\n", $$2, $$NF}' | sort
