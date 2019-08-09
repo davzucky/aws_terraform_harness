@@ -1,8 +1,8 @@
 
 TERRAFORM_CONFIG_FOLDER ?= .
 
-## Lint the terraform recipe
-terraform/linter: $(TERRAFORM_BINARY)
+
+terraform/linter: $(TERRAFORM_BINARY) ## Lint the terraform recipe
 	@echo -e "\e[32m==> Lint terraform \e[0m"
 	@cd $(TERRAFORM_CONFIG_FOLDER) && \
 	 $(TERRAFORM_BINARY) init --backend=false && \

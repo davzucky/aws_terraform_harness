@@ -6,8 +6,8 @@ TERRAFORM_BASE_VARIABLES ?=
 
 TERRAFORM_WORKSPACE_TF_VARS = $(TERRAFORM_WORKSPACE_CONFIG_FOLDER)/$(TERRAFORM_WORKSPACE_NAME)/variables.tfvars
 
-## Lint the terraform recipe
-terraform/apply-workspace: $(TERRAFORM_BINARY)
+
+terraform/apply-workspace: $(TERRAFORM_BINARY) ## Lint the terraform recipe
 	@echo -e "\e[32m==> Apply workspace $(TERRAFORM_WORKSPACE_NAME) \e[0m"
 	$(SELF) terraform/init
 
