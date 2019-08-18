@@ -1,3 +1,7 @@
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
+
+
 export BUILD_HARNESS_PATH ?= $(shell 'pwd')
 export OS ?= $(shell uname -s | tr '[:upper:]' '[:lower:]')
 export SELF ?= $(MAKE)

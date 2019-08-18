@@ -1,6 +1,14 @@
+
+# Terraform binary support
 BINARY_PATH = ./bin
 TERRAFORM_VERSION = 0.12.6
 TERRAFORM_BINARY_VERSION_FILE = $(BINARY_PATH)/terraform_$(TERRAFORM_VERSION)
 TERRAFORM_BINARY = $(abspath $(BINARY_PATH)/terraform)
 TERRAFORM_URL = https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
 TERRAFORM_TEMP_ZIP = $(BINARY_PATH)/terraform.zip
+
+# Terraform code root path
+TERRAFORM_ROOT_FOLDER = ./terraform
+TERRAFORM_FILES = $(shell find $(TERRAFORM_ROOT_FOLDER) -type f -name '*.tf')
+TERRAFORM_MAIN_FILES = $(shell find $(TERRAFORM_ROOT_FOLDER) -type f -name '*main.tf')
+TERRAFORM_MAIN_ROOT_FOLDER = $(foreach MAIN_FILE,$(TERRAFORM_MAIN_FILES), $(subst %/main.tf,$(MAIN_FILE))

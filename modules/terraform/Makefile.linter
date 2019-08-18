@@ -1,9 +1,22 @@
+include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
 
 TERRAFORM_CONFIG_FOLDER ?= .
+TERRAFORM_LINTER_RESULT = $(TERRAFORM_CONFIG_FOLDER)/linter.json
 
 
-terraform/linter: $(TERRAFORM_BINARY) ## Lint the terraform recipe
-	@echo -e "\e[32m==> Lint terraform \e[0m"
+# this is a terraform work around with the aws provider. if this is not set it would error.
+# https://github.com/hashicorp/terraform/issues/21408
+export AWS_DEFAULT_REGION = us-east-1
+
+$(TERRAFORM_LINTER_RESULT): $(TERRAFORM_BINARY) $(TERRAFORM_FILES)
+	@echo -e "\e[32m==> Create linter result $@ \e[0m"
 	@cd $(TERRAFORM_CONFIG_FOLDER) && \
 	 $(TERRAFORM_BINARY) init --backend=false && \
-	 $(TERRAFORM_BINARY) validate .
+	 $(TERRAFORM_BINARY) validate -json . > $@ ;\
+	 $(TERRAFORM_BINARY) validate
+	@echo -e "\e[32m==> you can find linter result in $@ \e[0m"
+
+
+terraform/linter: $(TERRAFORM_LINTER_RESULT) ## Lint the terraform recipe
+	@echo -e "\e[32m==> Lint terraform \e[0m"
+
