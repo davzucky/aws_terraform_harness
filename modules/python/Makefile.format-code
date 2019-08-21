@@ -5,7 +5,7 @@ mkfile_dir = $(dir $(mkfile_path))
 BLACK_FOLDER ?= ./src
 
 BACK_VIRTUAL_ENV_NAME = venv_back
-BACK_VIRTUAL_ENV_NAME_ACTIVATE = $(BACK_VIRTUAL_ENV_NAME)$(ACTIVATE_PATH)
+BACK_VIRTUAL_ENV_NAME_ACTIVATE = $(BACK_VIRTUAL_ENV_NAME)/$(ACTIVATE_PATH)
 
 BLACK_REQUIREMENTS := $(mkfile_dir)requirements.black.txt
 BLACK_REQUIREMENTS_FREEZE := $(BLACK_REQUIREMENTS).freeze
@@ -23,4 +23,4 @@ $(BLACK_REQUIREMENTS_FREEZE): $(BLACK_REQUIREMENTS) $(BACK_VIRTUAL_ENV_NAME_ACTI
 python/format-code: $(BLACK_REQUIREMENTS_FREEZE)
 	@echo -e "\e[32m==> Format python code using black\e[0m"
 	@source $(BACK_VIRTUAL_ENV_NAME_ACTIVATE) && \
-	 black .
+	 black $(BLACK_FOLDER)

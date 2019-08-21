@@ -5,6 +5,17 @@ include $(mkfile_dir)/Makefile.lambda
 
 .SECONDEXPANSION:
 $(RESULTS_FUNCTIONS_PATH_XML): $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML): $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_FREEZE_PYTEST) $(LAMBDA_PYTHON_ROOT_PATH)/%/$(REQUIREMENTS_TESTS_FREEZE_PYTEST) $$(call RELEVANT,%)
+$(RESULTS_TERRAFORM_TEST_PATH_XML): $(REQUIREMENTS_TERRAFORM_TEST_FREEZE) $(TERRAFORM_TEST_PYTHON_FILES)
+	@echo -e "\e[32m==> Create result file $@ for the lambda function $(dir $<) \e[0m"
+	@export root_path=$$(pwd) && \
+	 cd $(TERRAFORM_TESTS_ROOT) && \
+	 source $(realpath $(patsubst $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML),$(VIRTUAL_ENV_ROOT_PATH)/%_PYTEST,$@)/bin/activate)  && \
+	 pytest --flake8 --mypy --mypy-ignore-missing-imports --junit-xml=$${root_path}/$@
+
+TEST_RESULTS_XML =  $(RESULTS_FUNCTIONS_PATH_XML)
+#TEST_RESULTS_XML += $(RESULTS_TERRAFORM_TEST_PATH_XML)
+
+$(TEST_RESULTS_XML):
 	@echo -e "\e[32m==> Create result file $@ for the lambda function $(dir $<) \e[0m"
 	@export root_path=$$(pwd) && \
 	 cd $(patsubst $(RESULTS_PATH)/%/$(RESULT_FUNCTION_XML),$(LAMBDA_PYTHON_ROOT_PATH)/%/,$@) && \
