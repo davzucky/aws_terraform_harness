@@ -3,5 +3,5 @@ pytest-runner==5.1
 pytest-flake8==1.0.4
 mypy==0.720
 pytest-mypy==0.3.3
-pytest-html==1.21.1
+pytest-html==1.22.0
 toml==0.10.0
