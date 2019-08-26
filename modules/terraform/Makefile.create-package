@@ -1,0 +1,18 @@
+#TERRAFORM_CONFIG_FOLDER ?= .
+include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
+
+$(TERRAFORM_MODULE_PACKAGE_PATH): $(TERRAFORM_FILES)
+	@echo -e "\e[32m==> Create terraform module package $@ \e[0m"
+
+	@echo -e "\e[32m====> Delete all hidden folders from $(@D) \e[0m"
+	-rm -rfv $(@D)/.*  2>/dev/null
+
+	@echo -e "\e[32m====> Add files to the package  module  $@ \e[0m"
+	@mkdir -p $(@D) && \
+	 export root_path=$$(pwd) && \
+	 cd $(TERRAFORM_MODULES_ROOT_PATH) && \
+	 zip -r9 $${root_path}/$@ .
+
+
+terraform/create-package: $(TERRAFORM_MODULE_PACKAGE_PATH)  ## Create terraform module package
+	@echo -e "\e[32m==> Create terraform package $(TERRAFORM_CONFIG_FOLDER) \e[0m"
