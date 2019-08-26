@@ -6,7 +6,7 @@ $(LAMBDA_PACKAGES_ZIPS_PATH): $(TERRAFORM_LAMBDA_PACKAGES_PATH)/%.$(VERSION).zip
 	@echo -e "\e[32m==> Create lambda package $@ \e[0m"
 
 	@echo e "\e[32m====> Delete files $(TERRAFORM_LAMBDA_PACKAGES_PATH)/$**.zip \e[0m"
-	@rm $(TERRAFORM_LAMBDA_PACKAGES_PATH)/$**.zip
+	@rm $(TERRAFORM_LAMBDA_PACKAGES_PATH)/$**.zip -f
 
 	@echo -e "\e[32m====> add site-package \e[0m"
 	@mkdir -p $(@D) && \
