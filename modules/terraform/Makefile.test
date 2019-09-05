@@ -6,7 +6,7 @@ TERRAFORM_CONFIG_FOLDER ?= .
 # https://github.com/hashicorp/terraform/issues/21408
 export AWS_DEFAULT_REGION = us-east-1
 
-$(RESULTS_TERRAFORM_TESTS_PATH_XML): $(TERRAFORM_BINARY)
+$(RESULTS_TERRAFORM_TESTS_PATH_XML): $(TERRAFORM_TESTS_ROOT) $(TERRAFORM_BINARY)
 
 terraform/test: $(RESULTS_TERRAFORM_TESTS_PATH_XML) ## Test terraform module
 	@echo -e "\e[32m==> test terraform module \e[0m"
