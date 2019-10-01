@@ -11,6 +11,7 @@ SHARED_TESTS_ROOT ?= shared
 
 # python
 PYTHON_FILES = $(shell find $(LAMBDA_FUNCTIONS_FULL_ROOT_PATH) -type f -name '*.py')
+PYTHON_FILES += $(shell find $(LAMBDA_FUNCTIONS_FULL_ROOT_PATH) -type l -name '*.py')
 TERRAFORM_TESTS_PYTHON_FILES = $(shell find $(TERRAFORM_TESTS_ROOT) -type f -name '*.py')
 SHARED_TESTS_PYTHON_FILES = $(shell find $(SHARED_TESTS_ROOT) -type f -name '*.py')
 SHARED_TESTS_PYTHON_FILES = $(shell find $(SHARED_TESTS_ROOT) -type f -name '*.py')
