@@ -1,6 +1,9 @@
 #TERRAFORM_CONFIG_FOLDER ?= .
+#include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
+include $(BUILD_HARNESS_PATH)/modules/Makefile.share.variables
 include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
 
+#
 $(TERRAFORM_MODULE_PACKAGE_PATH): $(TERRAFORM_FILES)
 	@echo -e "\e[32m==> Create terraform module package $@ \e[0m"
 

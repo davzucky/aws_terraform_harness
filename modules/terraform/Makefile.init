@@ -1,8 +1,7 @@
-
-TERRAFORM_CONFIG_FOLDER ?= .
-
+include $(BUILD_HARNESS_PATH)/modules/Makefile.share.variables
+include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
 
 terraform/init: $(TERRAFORM_BINARY) ## init terraform recipe
 	@echo -e "\e[32m==> Init terraform \e[0m"
-	@cd $(TERRAFORM_CONFIG_FOLDER) && \
+	@cd $(TERRAFORM_ROOT) && \
 	 $(TERRAFORM_BINARY) init -input=false

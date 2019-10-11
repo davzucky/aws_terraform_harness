@@ -1,7 +1,8 @@
+include $(BUILD_HARNESS_PATH)/modules/Makefile.share.variables
 include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
 
-TERRAFORM_CONFIG_FOLDER ?= .
-TERRAFORM_LINTER_RESULT = $(TERRAFORM_CONFIG_FOLDER)/linter.json
+#TERRAFORM_CONFIG_FOLDER ?= .
+#TERRAFORM_LINTER_RESULT = $(TERRAFORM_CONFIG_FOLDER)/linter.json
 
 
 # this is a terraform work around with the aws provider. if this is not set it would error.
@@ -10,7 +11,7 @@ export AWS_DEFAULT_REGION = us-east-1
 
 $(TERRAFORM_LINTER_RESULT): $(TERRAFORM_BINARY) $(TERRAFORM_FILES)
 	@echo -e "\e[32m==> Create linter result $@ \e[0m"
-	@cd $(TERRAFORM_CONFIG_FOLDER) && \
+	@cd $(TERRAFORM_ROOT) && \
 	 $(TERRAFORM_BINARY) init --backend=false && \
 	 $(TERRAFORM_BINARY) validate -json . > $@ ;\
 	 $(TERRAFORM_BINARY) validate

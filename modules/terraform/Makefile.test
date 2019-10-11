@@ -1,3 +1,4 @@
+include $(BUILD_HARNESS_PATH)/modules/Makefile.share.variables
 include $(BUILD_HARNESS_PATH)/modules/terraform/Makefile.terraform
 include $(BUILD_HARNESS_PATH)/modules/python/lambda/Makefile.lambda
 
