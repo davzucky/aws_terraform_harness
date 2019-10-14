@@ -12,3 +12,6 @@ TERRAFORM_ROOT_FOLDER = ./
 TERRAFORM_FILES = $(shell find $(TERRAFORM_ROOT_FOLDER) -type f -name '*.tf')
 TERRAFORM_MAIN_FILES = $(shell find $(TERRAFORM_ROOT_FOLDER) -type f -name '*main.tf')
 TERRAFORM_MAIN_ROOT_FOLDER = $(foreach MAIN_FILE,$(TERRAFORM_MAIN_FILES), $(subst %/main.tf,$(MAIN_FILE))
+
+
+TERRAFORM_LINTER_RESULT = $(TERRAFORM_ROOT_FOLDER)/linter.json
