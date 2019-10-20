@@ -7,6 +7,7 @@ S3_PACKAGE_PATH = $(shell grep -r S3_folder_path config.toml | awk -F '"' '{prin
 
 GIT_HASH_COMMIT = $(shell git rev-parse --short HEAD)
 VERSION = $(CONFIG_VERSION).$(GIT_HASH_COMMIT)
+GIT_TAG ?= UNKNOW
 
 # Terraform
 TERRAFORM_ROOT = ./
