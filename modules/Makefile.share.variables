@@ -6,13 +6,10 @@ S3_BUCKET_URL = $(shell grep -r S3_bucket_uri config.toml | awk -F '"' '{print $
 S3_PACKAGE_PATH = $(shell grep -r S3_folder_path config.toml | awk -F '"' '{print $$2}')
 
 GIT_HASH_COMMIT = $(shell git rev-parse --short HEAD)
-VERSION = $(CONFIG_VERSION).$(GIT_HASH_COMMIT)
-GIT_TAG ?= UNKNOW
+VERSION := $(CONFIG_VERSION).$(GIT_HASH_COMMIT)
 
 # Terraform
 TERRAFORM_ROOT = ./
 TERRAFORM_OUTPUT_PACKAGE ?= ./packages
 TERRAFORM_TESTS_ROOT = $(TERRAFORM_ROOT)/tests
-#TERRAFORM_MODULES_ROOT_PATH = $(TERRAFORM_ROOT)/$(PROJECT_NAME)
 TERRAFORM_LAMBDA_PACKAGES_PATH = $(TERRAFORM_ROOT)/packages
-#TERRAFORM_MODULE_PACKAGE_PATH = $(TERRAFORM_OUTPUT_PACKAGE)/$(PROJECT_NAME).$(VERSION).zip

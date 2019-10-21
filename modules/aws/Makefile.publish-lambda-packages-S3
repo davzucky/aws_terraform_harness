@@ -1,12 +1,5 @@
 include $(BUILD_HARNESS_PATH)/modules/aws/Makefile.aws
 
-$(LAMBDA_PACKAGES_TAGGED_ZIPS_PUBLISHED): $(TERRAFORM_LAMBDA_PACKAGES_PATH)/%.$(VERSION).published : $(TERRAFORM_LAMBDA_PACKAGES_PATH)/%.$(VERSION).zip $(REQUIREMENTS_AWS_FREEZE)
-	@echo -e "\e[32m==> Publish lambda packages $< to S3 $(S3_BUCKET_URL)/lambda/$*/$(GIT_TAG)/package.zip \e[0m"
-	@source $(VIRTUAL_ENV_AWS_ACTIVATE)  && aws s3 cp $< $(S3_BUCKET_URL)/lambda/$*/$(GIT_TAG)/package.zip
-
-aws/publish-lambda-tagged-packages-S3: $(LAMBDA_PACKAGES_TAGGED_ZIPS_PUBLISHED) ## Publish all the lambda tagged packages to S3
-	@echo -e "\e[32m==> Publish lambda tagged packages to S3 \e[0m"
-
 $(LAMBDA_PACKAGES_ZIPS_PUBLISHED): $(TERRAFORM_LAMBDA_PACKAGES_PATH)/%.$(VERSION).published : $(TERRAFORM_LAMBDA_PACKAGES_PATH)/%.$(VERSION).zip $(REQUIREMENTS_AWS_FREEZE)
 	@echo -e "\e[32m==> Publish lambda packages $< to S3 $(S3_BUCKET_URL)/lambda/$*/$(VERSION)/package.zip \e[0m"
 	@source $(VIRTUAL_ENV_AWS_ACTIVATE)  && aws s3 cp $< $(S3_BUCKET_URL)/lambda/$*/$(VERSION)/package.zip
