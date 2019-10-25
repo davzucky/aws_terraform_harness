@@ -1,7 +1,7 @@
 
 # Terraform binary support
 BINARY_PATH = ./bin
-TERRAFORM_VERSION = 0.12.9
+TERRAFORM_VERSION = 0.12.12
 TERRAFORM_BINARY_VERSION_FILE = $(BINARY_PATH)/terraform_$(TERRAFORM_VERSION)
 TERRAFORM_BINARY = $(abspath $(BINARY_PATH)/terraform)
 TERRAFORM_URL = https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_linux_amd64.zip
