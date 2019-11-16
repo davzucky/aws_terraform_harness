@@ -4,7 +4,7 @@ include $(BUILD_HARNESS_PATH)/modules/Makefile.share.variables
 ifneq (,$(wildcard lambda))
 	LAMBDA_ROOT_PATH ?= lambda
 	LAMBDA_PYTHON_ROOT_PATH = $(LAMBDA_ROOT_PATH)/python
-	LAMBDA_FUNCTIONS := $(shell ls --ignore $(LAMBDA_PYTHON_ROOT_PATH))
+	LAMBDA_FUNCTIONS := $(shell ls $(LAMBDA_PYTHON_ROOT_PATH))
 	LAMBDA_FUNCTIONS_FULL_ROOT_PATH = $(foreach FUNCTION_NAME,$(LAMBDA_FUNCTIONS), $(LAMBDA_PYTHON_ROOT_PATH)/$(FUNCTION_NAME))
 endif
 
